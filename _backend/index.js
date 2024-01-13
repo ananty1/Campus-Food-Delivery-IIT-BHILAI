@@ -40,3 +40,5 @@ app.use('/api/notes',require('./routes/note'));
 app.listen(port, () => {
   console.log(`Backend is listening on port ${port}`)
 })
+
+module.exports = app; // Export the Express app
