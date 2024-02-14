@@ -1,12 +1,16 @@
 import { response } from "express";
 import mysql from "mysql2";
 
+import { config } from "dotenv";
+
+config();
+
 const pool = mysql
   .createPool({
-    host: "127.0.0.1",
-    user: "root",
-    password: "anant",
-    database: "foodiee",
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
   })
   .promise();
 
@@ -22,21 +26,23 @@ export async function addItem(itemData) {
     itemData.ExpectedTime,
     itemData.CousineType,
   ];
-  
 
   try {
-    const [checkIfAlready] = await pool.query('SELECT * FROM Items WHERE ItemName = ?', [itemData.ItemName]);
+    const [checkIfAlready] = await pool.query(
+      "SELECT * FROM Items WHERE ItemName = ?",
+      [itemData.ItemName]
+    );
     // If there is at least one row, the item already exists
     if (checkIfAlready.length > 0) {
-      return [403,"Item already exists"];
+      return [403, "Item already exists"];
     }
     const [row] = await pool.query(sql, data);
     // const result = await showItem(row.insertId);
-    return [200,`Item added successfully with ID ${row.insertId}`];
+    return [200, `Item added successfully with ID ${row.insertId}`];
     // return row;
   } catch (error) {
     console.error(`An error occurred while adding the item: ${error}`);
-    return [400,error];
+    return [400, error];
   }
 }
 

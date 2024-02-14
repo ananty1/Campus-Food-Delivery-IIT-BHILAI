@@ -1,11 +1,15 @@
 import mysql from "mysql2";
 
+import { config } from "dotenv";
+
+config();
+
 const pool = mysql
   .createPool({
-    host: "127.0.0.1",
-    user: "root",
-    password: "anant",
-    database: "foodiee",
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
   })
   .promise();
 
@@ -29,10 +33,10 @@ export async function showOrder(shopkeeperID) {
   return row;
 }
 
-
-export async function updateOrder(shopkeeperID,item) {
-  let sql = "UPDATE LiveOrders SET orderStatus = ? WHERE ShopkeeperID = ? AND ItemID = ? AND UserID = ?";
-  let data = [item.orderStatus,item.ShopkeeperID,item.itemID,item.USERID];
+export async function updateOrder(shopkeeperID, item) {
+  let sql =
+    "UPDATE LiveOrders SET orderStatus = ? WHERE ShopkeeperID = ? AND ItemID = ? AND UserID = ?";
+  let data = [item.orderStatus, item.ShopkeeperID, item.itemID, item.USERID];
 
   const [row] = await pool.query(sql, data);
   return row;
